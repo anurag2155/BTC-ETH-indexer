@@ -73,11 +73,11 @@ Ensure PostgreSQL is running on port 5433 with credentials from `.env`
 
 ```env
 # Database
-DB_HOST=localhost
-DB_PORT=5433
-DB_USER=postgres
-DB_PASSWORD=StrongPassword123
-DB_NAME=eth_indexer
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
 
 # Ethereum
 RPC_URL=https://eth.llamarpc.com
