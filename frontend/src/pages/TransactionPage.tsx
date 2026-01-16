@@ -81,7 +81,7 @@ const TransactionPage = ({ chain }: { chain: 'eth' | 'btc' }) => {
                         <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
                             <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">Value Transfer</h3>
                             <div className="text-3xl font-mono font-bold text-slate-900">
-                                {(Number(tx.value) / 1e18).toFixed(6)} 
+                                {(Number(tx.value) / (chain === 'btc' ? 1e8 : 1e18)).toFixed(8)} 
                                 <span className={`text-lg ml-2 ${theme.text}`}>{chain.toUpperCase()}</span>
                             </div>
                         </div>
@@ -92,7 +92,7 @@ const TransactionPage = ({ chain }: { chain: 'eth' | 'btc' }) => {
                                     #{tx.blockNumber}
                                 </Link>
                                 <div className="text-sm text-slate-500 font-medium bg-white px-3 py-1 rounded-full shadow-sm border border-slate-100">
-                                     {formatDistanceToNow(new Date(parseInt(tx.createdAt || Date.now().toString())), { addSuffix: true })}
+                                     {formatDistanceToNow(tx.createdAt ? new Date(tx.createdAt) : new Date(), { addSuffix: true }).replace('about ', '').replace('almost ', '')}
                                 </div>
                              </div>
                         </div>

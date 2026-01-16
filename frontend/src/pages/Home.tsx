@@ -125,7 +125,7 @@ const Home = ({ chain }: { chain: 'eth' | 'btc' }) => {
                                                     </div>
                                                     <div className="flex items-center text-sm text-slate-500 mt-1">
                                                         <Clock className="w-3.5 h-3.5 mr-1.5" />
-                                                        {formatDistanceToNow(new Date(parseInt(block.timestamp) * 1000), { addSuffix: true })}
+                                                        {formatDistanceToNow(new Date(parseInt(block.timestamp) * 1000), { addSuffix: true }).replace('about ', '').replace('almost ', '')}
                                                     </div>
                                                 </div>
                                             </div>

@@ -8,6 +8,7 @@ import { startIndexer } from "./indexer";
 import { startBitcoinIndexer } from "./bitcoin-indexer";
 import { ethers } from "ethers";
 import * as dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ const app = express();
 app.use(cors());
 const PORT = 3000;
 const RPC_URL = process.env.RPC_URL || "https://rpc.ankr.com/eth";
+const BITCOIN_RPC_URL = process.env.BITCOIN_RPC_URL || "";
+const BITCOIN_API_KEY = process.env.BITCOIN_API_KEY || "";
 
 app.use(express.json());
 
@@ -103,7 +106,7 @@ app.get("/eth/balance/:address", async (req, res) => {
     try {
         const provider = new ethers.JsonRpcProvider(RPC_URL, 1);
         const balance = await provider.getBalance(req.params.address);
-        res.json({ balance: ethers.formatEther(balance) });
+        res.json({ balance: balance.toString() });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error fetching balance" });
@@ -188,6 +191,20 @@ app.get("/btc/address/:address/transactions", async (req, res) => {
         res.json(transactions);
     } catch (error) {
         res.status(500).json({ error: "Error fetching address transactions" });
+    }
+});
+
+// Start server
+app.get("/btc/balance/:address", async (req, res) => {
+    try {
+        const address = req.params.address;
+        const response = await axios.get(`${BITCOIN_RPC_URL}/address/${address}?apikey=${BITCOIN_API_KEY}&details=basic`);
+        // Blockbook returns balance in satoshis as string or number
+        const balanceSat = response.data.balance || "0";
+        res.json({ balance: balanceSat });
+    } catch (error: any) {
+        console.error("Error fetching BTC balance:", error.message);
+        res.status(500).json({ error: "Error fetching balance" });
     }
 });
 

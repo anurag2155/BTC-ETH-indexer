@@ -77,7 +77,7 @@ const BlockPage = ({ chain }: { chain: 'eth' | 'btc' }) => {
                             <div className="text-sm text-slate-500 mb-1">Mined</div>
                             <div className="font-medium text-slate-800 flex items-center justify-end gap-2">
                                 <Clock className="w-4 h-4 text-slate-400" />
-                                {formatDistanceToNow(new Date(parseInt(block.timestamp) * 1000), { addSuffix: true })}
+                                {formatDistanceToNow(new Date(parseInt(block.timestamp) * 1000), { addSuffix: true }).replace('about ', '').replace('almost ', '')}
                             </div>
                         </div>
                     </div>
@@ -129,7 +129,7 @@ const BlockPage = ({ chain }: { chain: 'eth' | 'btc' }) => {
                                             )}
                                         </td>
                                         <td className="px-6 py-4 text-right font-mono font-medium text-slate-700">
-                                            {(Number(tx.value) / 1e18).toFixed(6)} {chain.toUpperCase()}
+                                            {(Number(tx.value) / (chain === 'btc' ? 1e8 : 1e18)).toFixed(8)} {chain.toUpperCase()}
                                         </td>
                                     </tr>
                                 ))}

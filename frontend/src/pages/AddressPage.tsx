@@ -11,12 +11,10 @@ const AddressPage = ({ chain }: { chain: 'eth' | 'btc' }) => {
      const [copied, setCopied] = useState(false);
 
     useEffect(() => {
-        // Fetch balance (only for ETH)
-        if (chain === 'eth') {
-            api.get<{ balance: string }>(`/${chain}/balance/${address}`)
-                .then(res => setBalance(res.data.balance))
-                .catch(err => console.error(err));
-        }
+        // Fetch balance
+        api.get<{ balance: string }>(`/${chain}/balance/${address}`)
+            .then(res => setBalance(res.data.balance))
+            .catch(err => console.error(err));
             
         // Fetch transactions
         api.get<Transaction[]>(`/${chain}/address/${address}/transactions`)
@@ -73,7 +71,7 @@ const AddressPage = ({ chain }: { chain: 'eth' | 'btc' }) => {
                     <div className="text-right bg-slate-900 text-white p-6 rounded-2xl min-w-[240px] shadow-lg">
                         <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Current Balance</div>
                         <div className="text-3xl font-mono font-bold">
-                            {(parseInt(balance) / 1e18).toFixed(4)} <span className="text-lg text-slate-500">{chain.toUpperCase()}</span>
+                            {(Number(balance) / (chain === 'btc' ? 1e8 : 1e18)).toFixed(8)} <span className="text-lg text-slate-500">{chain.toUpperCase()}</span>
                         </div>
                         <div className="text-xs text-slate-500 mt-2 font-medium">
                             ≈ $0.00 USD
@@ -104,14 +102,14 @@ const AddressPage = ({ chain }: { chain: 'eth' | 'btc' }) => {
                                                     {tx.hash.substring(0, 16)}...
                                                 </Link>
                                                 <div className="text-xs text-slate-500 mt-0.5">
-                                                    {formatDistanceToNow(new Date(parseInt(tx.createdAt || Date.now().toString())), { addSuffix: true })}
+                                                    {formatDistanceToNow(tx.createdAt ? new Date(tx.createdAt) : new Date(), { addSuffix: true }).replace('about ', '').replace('almost ', '')}
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="text-right">
                                             <div className={`font-mono font-bold ${isIncoming ? 'text-green-600' : 'text-slate-900'}`}>
-                                                {isIncoming ? '+' : '-'}{(Number(tx.value) / 1e18).toFixed(4)} {chain.toUpperCase()}
+                                                {isIncoming ? '+' : '-'}{(Number(tx.value) / (chain === 'btc' ? 1e8 : 1e18)).toFixed(8)} {chain.toUpperCase()}
                                             </div>
                                              <div className="text-xs text-slate-400 font-mono">
                                                 Block #{tx.blockNumber}
